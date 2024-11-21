@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Youtube, Twitter, Github, Twitch, Music, Cat, Code, ArrowRight, Banana } from 'lucide-react'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface Video {
   title: string;
@@ -15,6 +14,8 @@ export default function Component() {
   const [email, setEmail] = useState('')
   const [videos, setVideos] = useState<Video[]>([]);
   const [error, setError] = useState<null | string>(null);
+  const [clickCount, setClickCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -30,16 +31,36 @@ export default function Component() {
           setError('An unknown error occurred');
         }
       }
+      
     };
 
     fetchVideos();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Email submitted:', email)
-    setEmail('')
+  function vibrar() {
+    const elemento = document.getElementById('falopa');
+    elemento?.classList.add('animate-pulse');
+  
+    // Eliminar la clase después de un tiempo para que la animación no se repita indefinidamente
+    setTimeout(() => {
+      elemento?.classList.remove('animate-pulse');
+    }, 1000);
   }
+
+  const handleClick = () => {
+    vibrar()
+    setClickCount(clickCount + 1);
+
+    if (clickCount >= 2) {
+      setIsModalOpen(true);
+    }
+  };
+
+  const typewriterRef = useRef(null);
+
+      useEffect(() => {
+        
+      }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-gray-100">
@@ -63,40 +84,55 @@ export default function Component() {
       </header>
       <main className="flex-1">
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=720&width=1280')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-cover bg-center opacity-10"></div>
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 lg:space-x-8">
               <div className="flex flex-col items-center lg:items-start space-y-4 text-center lg:text-left">
                 <div className="space-y-2">
                   <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Código, Música y Gatos</span>
+                    <span ref={typewriterRef} className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Código, Música y Gatos</span>
                   </h1>
                   <p className="mx-auto lg:mx-0 max-w-[700px] text-gray-300 md:text-xl dark:text-gray-400">
-                    Explora el fascinante mundo donde la programación, la música y los felinos se encuentran.
+                    Explora el fascinante mundo donde la programación, la música, los felinos y los pepinos se encuentran.
                   </p>
                 </div>
-                <div className="w-full max-w-sm space-y-2">
-                  hola 
+                <div className="w-full max-w-sm space-y-2 hover:cursor-pointer ml-0 mx-20" id="falopa" onClick={handleClick}>
+                  falopa
                 </div>
+                {isModalOpen && (
+                  <div className="fixed inset-0 z-10 flex items-center justify-center">
+                    <div className="modal bg-white rounded-lg shadow-lg p-6">
+                       <iframe title="Lumber Jack Game" src="https://tbot.xyz/lumber/" width="300" height="500"></iframe> 
+                      <button onClick={() => setIsModalOpen(false)} className="mt-4 bg-gradient-to-r from-purple-400 to-pink-600 text-white font-bold py-2 px-4 rounded">Cerrar</button>
+                    </div>
+                   
+                  </div>
+                )}
               </div>
               <div className="hidden lg:block">
                 <img
-                  src="/logo.jpg"
+                  src="/logo.jpeg"
                   alt="Logo de Dot Dager"
-                  width={200}
-                  height={200}
+                  width={400}
+                  height={400}
                   className="rounded-full border-4 border-purple-600 shadow-lg"
+                  
                 />
+                
               </div>
             </div>
           </div>
         </section>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path fill="#1C1835" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,224C384,245,480,267,576,250.7C672,235,768,181,864,186.7C960,192,1056,256,1152,261.3C1248,267,1344,213,1392,186.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
         <section id="videos" className="w-full py-12 md:py-24 lg:py-32 bg-gray-900 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-gray-900/20"></div>
           <div className="container px-4 md:px-6 relative z-10">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Videos Destacados</h2>
             <p className="mx-auto lg:mx-0 max-w-[700px] text-gray-300 md:text-xl dark:text-gray-400 mb-5">
-                    Ultimos videos mas famosos del canal.
+                    Ultimos videos mas famosos del canal. 
+                    Aquí encontrarás Guias, opiniones y cosas sobre el mundo de la programación.
             </p>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {videos.map((i) => (
@@ -126,7 +162,19 @@ export default function Component() {
           <div className="absolute inset-0 bg-[url('/placeholder.svg?height=720&width=1280')] bg-cover bg-center opacity-5"></div>
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-4 text-center">
+            <div className="hidden lg:block">
+                <img
+                  src="/music.png"
+                  alt="Dager tocando falopa"
+                  width={300}
+                  height={300}
+                  className="rounded-full border-4 border-purple-600 shadow-lg"
+                  
+                />
+                
+              </div>
               <div className="rounded-full bg-purple-600 p-3 shadow-lg">
+                
                 <Music className="h-8 w-8 text-white" />
               </div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Rincón Musical</h2>
@@ -140,17 +188,18 @@ export default function Component() {
             </div>
           </div>
         </section>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#1E1938" fill-opacity="1" d="M0,160L48,149.3C96,139,192,117,288,128C384,139,480,181,576,176C672,171,768,117,864,101.3C960,85,1056,107,1152,133.3C1248,160,1344,192,1392,208L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
         <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-gray-900 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-gray-900/20"></div>
           <div className="container px-4 md:px-6 relative z-10">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="relative group">
                 <img
-                  alt="CodeTuber con su gato"
+                  alt="Mariano con su gato"
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full shadow-2xl transition-transform duration-300 group-hover:scale-100"
-                  height="550"
-                  src="https://i.ytimg.com/vi/pv6Z6omFeqo/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhhIGEoYTAP&rs=AOn4CLBCyUNPSAlMdHb2D81rB4ECPkEWOA"
-                  width="550"
+                  height="560"
+                  src="/cat.jpg"
+                  width="460"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
@@ -177,7 +226,7 @@ export default function Component() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Conéctate conmigo</h2>
               <p className="max-w-[600px] text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Sígueme en mis redes sociales para mantenerte actualizado con los últimos tutoriales, música y fotos de gatos.
+                Sígueme en mis redes sociales para mantenerte actualizado con mis videos, música y fotos de gatos. 
               </p>
               <div className="flex space-x-4">
                 <a href="https://www.youtube.com/@DotDager" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-purple-400 transition-colors transform hover:scale-110">
@@ -201,6 +250,7 @@ export default function Component() {
           </div>
         </section>
       </main>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#111827" fill-opacity="1" d="M0,160L48,181.3C96,203,192,245,288,234.7C384,224,480,160,576,122.7C672,85,768,75,864,106.7C960,139,1056,213,1152,240C1248,267,1344,245,1392,234.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
       <footer className="w-full py-6 bg-gray-900 border-t border-gray-800">
         <div className="container px-4 md:px-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-400">© 2024 Dot Dager. Todos los derechos reservados.</p>
@@ -209,3 +259,4 @@ export default function Component() {
     </div>
   )
 }
+

@@ -29,6 +29,7 @@
     "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3",
+    "typewriter-effect": "^2.21.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
