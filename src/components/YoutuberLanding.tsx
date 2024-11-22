@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Youtube, Twitter, Github, Twitch, Music, Cat, Code, ArrowRight, Banana } from 'lucide-react'
 import React, { useEffect, useState, useRef } from 'react';
 import './Landing.css';
-import TypewriterEffect from "./ui/TypeWriterEffect";
+import TypingEffect from "./ui/TypingEffect";
 
 interface Video {
   title: string;
@@ -19,19 +19,41 @@ export default function Component() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [falling, setFalling] = useState(false);
   const [shake, setShake] = useState(false);
-  // Estado para alternar entre imagen y GIF
   const [isGif, setIsGif] = useState(false);
-
-  const phrases = [
-    "Soy Dot dager.",
-    "Soy Mariano.",
-    "Soy DevTuber.",
-  ];
+  const audioJhin = useRef<HTMLAudioElement | null>(null);
+  const audioYoda = useRef<HTMLAudioElement | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
 
   // Rutas de la imagen y el GIF
   const staticImage = '/logo.jpeg';
-  const gifImage = 'logo.gif';
+  const gifImage = '/logo.gif';
+
+  const playSublime = () => {
+    if (audioJhin.current) {
+      audioJhin.current.currentTime = 0; // Reinicia el audio
+      audioJhin.current.play().catch((err) => {
+        console.error("Error al reproducir el sonido:", err);
+      });
+    }
+  };
+
+  const playYoda = () => {
+    if (audioYoda.current) {
+      audioYoda.current.currentTime = 0; // Reinicia el audio
+      audioYoda.current.play().catch((err) => {
+        console.error("Error al reproducir el sonido:", err);
+      });
+    }
+  };
+
+  useEffect(() => {
+    // Precargar el audio al montar el componente
+    audioJhin.current = new Audio('/SUBLIME.mp3');
+    audioJhin.current.load();
+    audioYoda.current = new Audio('/death.mp3');
+    audioYoda.current.load();
+  }, []);
 
   useEffect(() => {
 
@@ -80,10 +102,14 @@ export default function Component() {
     if (clickCount === 2){
       setIsModalOpen(true);
     }
-    if (clickCount < 3) {
+    if (clickCount === 3){
+      playSublime();
+    }
+    if (clickCount < 4) {
       setShake(true);
-      setTimeout(() => setShake(false), 400);
+      setTimeout(() => setShake(false), 600);
     } else {
+      playYoda();
       setFalling(true);
     }
   };
@@ -119,11 +145,9 @@ export default function Component() {
               <div className="flex flex-col items-center lg:items-start space-y-4 text-center lg:text-left">
                 <div className="space-y-2">
                   <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
-                    <TypewriterEffect 
-                    phrases={phrases} 
-                    textSpeed={150} 
-                    className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600"
-                    />
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+                      Soy <span className="inline-block"><TypingEffect texts={['Dot Dager', 'un programador', 'un youtuber', 'Mariano Villa']} /></span>
+                    </span>
                   </h1>
                   <p className="mx-auto lg:mx-0 max-w-[700px] text-gray-300 md:text-xl dark:text-gray-400">
                     Explora el fascinante mundo donde la programación, la música, los felinos y los pepinos se encuentran.
@@ -164,9 +188,8 @@ export default function Component() {
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-gray-900/20"></div>
           <div className="container px-4 md:px-6 relative z-10">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Videos Destacados</h2>
-            <p className="mx-auto lg:mx-0 max-w-[700px] text-gray-300 md:text-xl dark:text-gray-400 mb-5">
-                    Ultimos videos mas famosos del canal. 
-                    Aquí encontrarás Guias, opiniones y cosas sobre el mundo de la programación.
+            <p className="mx-auto lg:mx-0 max-w-[700px] text-gray-300 md:text-xl dark:text-gray-400 mb-10">
+                    Ultimos videos más famosos del canal. 
             </p>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {videos.map((i) => (
@@ -193,12 +216,12 @@ export default function Component() {
           </div>
         </section>
         <section id="music" className="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=720&width=1280')] bg-cover bg-center opacity-5"></div>
+          <div className="absolute inset-0 bg-cover bg-center opacity-5"></div>
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-4 text-center">
             <div className="hidden lg:block">
                 <img
-                  src="/music.png"
+                  src="/music.gif"
                   alt="Dager tocando falopa"
                   width={300}
                   height={300}
@@ -239,8 +262,10 @@ export default function Component() {
               </div>
               <div className="flex flex-col justify-center space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Sobre Dot Dager</h2>
-                <p className="max-w-[600px] text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Soy un desarrollador apasionado, músico amateur y amante de los gatos. Mi misión es combinar estas pasiones para crear contenido único y educativo.
+                <p  className={`info-text ${isHovered ? 'hovered' : ''}max-w-[600px] text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed`} onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}>
+                  {isHovered ? ' Soy un desarrollador apasionado, músico amateur y amante de las mamás solteras. Mi misión es combinar estas pasiones para crear contenido único y educativo.' : ' Soy un desarrollador apasionado, músico amateur y amante de los gatos. Mi misión es combinar estas pasiones para crear contenido único y educativo.'}
+                 
                 </p>
                 <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg shadow-inner">
                   <Cat className="h-8 w-8 text-purple-400" />
@@ -255,10 +280,10 @@ export default function Component() {
           </div>
         </section>
         <section id="contact" className="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=720&width=1280')] bg-cover bg-center opacity-5"></div>
+          <div className="absolute inset-0 bg-cover bg-center opacity-5"></div>
           <div className="container px-4 md:px-6 relative z-10">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Conéctate conmigo</h2>
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mt-20">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Conéctate, si querés...</h2>
               <p className="max-w-[600px] text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Sígueme en mis redes sociales para mantenerte actualizado con mis videos, música y fotos de gatos. 
               </p>
