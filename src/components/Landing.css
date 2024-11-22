@@ -1,0 +1,80 @@
+.cucumber-background {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; 
+    background-image: url('/pickle.png'); 
+    background-repeat: repeat; 
+    background-size: 100px 100px; 
+    background-attachment: fixed; 
+    animation: moveDiagonal 10s linear infinite; 
+  }
+  
+  @keyframes moveDiagonal {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 500px 500px; 
+    }
+  }
+
+  .toggle-image {
+    transition: opacity 0.5s ease-in-out; 
+  }
+  
+  .toggle-image:hover {
+    opacity: 0.92;
+    cursor: pointer;
+  }
+
+
+  .wordfall {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.1s ease;
+  }
+  
+  .shake {
+    animation: shake 0.1s 4; /* El temblor dura 4 repeticiones */
+  }
+  
+  @keyframes shake {
+    0% {
+      transform: translateX(0);
+      color: red; /* Cambia el color a rojo al principio */
+    }
+    25% {
+      transform: translateX(-10px);
+      color: red; /* Mantén el color rojo */
+    }
+    50% {
+      transform: translateX(10px);
+      color: red; /* Mantén el color rojo */
+    }
+    75% {
+      transform: translateX(-10px);
+      color: red; /* Mantén el color rojo */
+    }
+    100% {
+      transform: translateX(0);
+      color: initial; /* Vuelve al color original */
+    }
+  }
+  
+  .fall {
+    animation: fall 2s forwards;
+  }
+  
+  @keyframes fall {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(100vh); /* La palabra cae fuera de la pantalla */
+      opacity: 0; /* Se desvanece mientras cae */
+    }
+  }

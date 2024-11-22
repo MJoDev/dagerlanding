@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Youtube, Twitter, Github, Twitch, Music, Cat, Code, ArrowRight, Banana } from 'lucide-react'
 import React, { useEffect, useState, useRef } from 'react';
+import './Landing.css';
+import TypewriterEffect from "./ui/TypeWriterEffect";
 
 interface Video {
   title: string;
@@ -11,13 +13,28 @@ interface Video {
 }
 
 export default function Component() {
-  const [email, setEmail] = useState('')
   const [videos, setVideos] = useState<Video[]>([]);
   const [error, setError] = useState<null | string>(null);
   const [clickCount, setClickCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [falling, setFalling] = useState(false);
+  const [shake, setShake] = useState(false);
+  // Estado para alternar entre imagen y GIF
+  const [isGif, setIsGif] = useState(false);
+
+  const phrases = [
+    "Soy Dot dager.",
+    "Soy Mariano.",
+    "Soy DevTuber.",
+  ];
+
+
+  // Rutas de la imagen y el GIF
+  const staticImage = '/logo.jpeg';
+  const gifImage = 'logo.gif';
 
   useEffect(() => {
+
     const fetchVideos = async () => {
       try {
         const response = await fetch('/api/videos');
@@ -37,6 +54,16 @@ export default function Component() {
     fetchVideos();
   }, []);
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined; // Tipado del temporizador
+    if (isGif) {
+      timer = setTimeout(() => setIsGif(false), 3070);
+    }
+    return () => {
+      if (timer) clearTimeout(timer); 
+    };
+  }, [isGif]);
+
   function vibrar() {
     const elemento = document.getElementById('falopa');
     elemento?.classList.add('animate-pulse');
@@ -48,22 +75,22 @@ export default function Component() {
   }
 
   const handleClick = () => {
-    vibrar()
-    setClickCount(clickCount + 1);
+    setClickCount((prev) => prev + 1);
 
-    if (clickCount >= 2) {
+    if (clickCount === 2){
       setIsModalOpen(true);
+    }
+    if (clickCount < 3) {
+      setShake(true);
+      setTimeout(() => setShake(false), 400);
+    } else {
+      setFalling(true);
     }
   };
 
-  const typewriterRef = useRef(null);
-
-      useEffect(() => {
-        
-      }, []);
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-gray-100">
+      <div className="cucumber-background"></div>
       <header className="px-4 lg:px-6 h-14 flex items-center sticky top-0 z-50 backdrop-blur-md bg-gray-900/50">
         <a className="flex items-center justify-center" href="#">
           <img
@@ -83,20 +110,26 @@ export default function Component() {
         </nav>
       </header>
       <main className="flex-1">
-      <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden">
+        
+      <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden ">
+          
           <div className="absolute inset-0 bg-cover bg-center opacity-10"></div>
           <div className="container px-4 md:px-6 relative z-10">
-            <div className="flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 lg:space-x-8">
+            <div className="flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 lg:space-x-8 ">
               <div className="flex flex-col items-center lg:items-start space-y-4 text-center lg:text-left">
                 <div className="space-y-2">
                   <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
-                    <span ref={typewriterRef} className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Código, Música y Gatos</span>
+                    <TypewriterEffect 
+                    phrases={phrases} 
+                    textSpeed={150} 
+                    className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600"
+                    />
                   </h1>
                   <p className="mx-auto lg:mx-0 max-w-[700px] text-gray-300 md:text-xl dark:text-gray-400">
                     Explora el fascinante mundo donde la programación, la música, los felinos y los pepinos se encuentran.
                   </p>
                 </div>
-                <div className="w-full max-w-sm space-y-2 hover:cursor-pointer ml-0 mx-20" id="falopa" onClick={handleClick}>
+                <div className={`wordfall ${falling ? 'fall' : ''} ${shake ? 'shake' : ''}`} onClick={handleClick}>
                   falopa
                 </div>
                 {isModalOpen && (
@@ -111,11 +144,12 @@ export default function Component() {
               </div>
               <div className="hidden lg:block">
                 <img
-                  src="/logo.jpeg"
+                  src={isGif ? gifImage : staticImage}
+                  onClick={() => setIsGif(!isGif)}
                   alt="Logo de Dot Dager"
-                  width={400}
-                  height={400}
-                  className="rounded-full border-4 border-purple-600 shadow-lg"
+                  width={350}
+                  height={350}
+                  className="rounded-full border-4 border-purple-600 shadow-lg toggle-image"
                   
                 />
                 
@@ -123,7 +157,7 @@ export default function Component() {
             </div>
           </div>
         </section>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="z-10 w-full relative" >
           <path fill="#1C1835" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,224C384,245,480,267,576,250.7C672,235,768,181,864,186.7C960,192,1056,256,1152,261.3C1248,267,1344,213,1392,186.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
         <section id="videos" className="w-full py-12 md:py-24 lg:py-32 bg-gray-900 relative overflow-hidden">
@@ -188,7 +222,7 @@ export default function Component() {
             </div>
           </div>
         </section>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#1E1938" fill-opacity="1" d="M0,160L48,149.3C96,139,192,117,288,128C384,139,480,181,576,176C672,171,768,117,864,101.3C960,85,1056,107,1152,133.3C1248,160,1344,192,1392,208L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" className="z-10 w-full relative" viewBox="0 0 1440 320"><path fill="#1E1938" fill-opacity="1" d="M0,160L48,149.3C96,139,192,117,288,128C384,139,480,181,576,176C672,171,768,117,864,101.3C960,85,1056,107,1152,133.3C1248,160,1344,192,1392,208L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
         <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-gray-900 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-gray-900/20"></div>
           <div className="container px-4 md:px-6 relative z-10">
@@ -250,8 +284,8 @@ export default function Component() {
           </div>
         </section>
       </main>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#111827" fill-opacity="1" d="M0,160L48,181.3C96,203,192,245,288,234.7C384,224,480,160,576,122.7C672,85,768,75,864,106.7C960,139,1056,213,1152,240C1248,267,1344,245,1392,234.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
-      <footer className="w-full py-6 bg-gray-900 border-t border-gray-800">
+      <svg  className="z-10"xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#111827" fill-opacity="1" d="M0,160L48,181.3C96,203,192,245,288,234.7C384,224,480,160,576,122.7C672,85,768,75,864,106.7C960,139,1056,213,1152,240C1248,267,1344,245,1392,234.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+      <footer className="w-full py-6 bg-gray-900 border-t border-gray-800 z-10">
         <div className="container px-4 md:px-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-400">© 2024 Dot Dager. Todos los derechos reservados.</p>
         </div>
