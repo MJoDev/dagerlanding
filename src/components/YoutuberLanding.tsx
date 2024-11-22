@@ -86,16 +86,6 @@ export default function Component() {
     };
   }, [isGif]);
 
-  function vibrar() {
-    const elemento = document.getElementById('falopa');
-    elemento?.classList.add('animate-pulse');
-  
-    // Eliminar la clase después de un tiempo para que la animación no se repita indefinidamente
-    setTimeout(() => {
-      elemento?.classList.remove('animate-pulse');
-    }, 1000);
-  }
-
   const handleClick = () => {
     setClickCount((prev) => prev + 1);
 
