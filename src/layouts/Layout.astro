@@ -14,11 +14,42 @@ const { description, title } = Astro.props;
     <meta charset="utf-8" />
     <meta name="description" content={description} />
 
-    <!-- Meta tags para redes sociales -->
-    <meta property="og:title" content="Dot Dager - Landing" />
-    <meta property="og:description" content="Full-stack senior y contador serial de chistes de mierda." />
-    <meta property="og:type" content="website" />
+  
+    <meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta http-equiv="content-language" content="es" />
+		
+		<meta property="og:url" content="https://dager.netlify.app/" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="author" content="Moises Jimenez" />
+		<meta name="robots" content="index, follow" />
+		<link rel="icon" href="/favicon.svg" />
+		<meta name="googlebot" content="index,follow" />
+		<meta name="google" content="nositelinkssearchbox" />
+		<meta name="google" content="notranslate" />
 
+		<!-- Facebook Meta Tags -->
+		<meta property="og:url" content="https://dager.netlify.app/" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta
+		property="og:description"
+		content={description}
+		/>
+
+		<!-- Twitter Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta property="twitter:domain" content="dager.netlify.app/" />
+		<meta property="twitter:url" content="https://dager.netlify.app/" />
+		<meta name="twitter:title" content={title} />
+		<meta
+		name="twitter:description"
+		content={description}
+		/>	
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
