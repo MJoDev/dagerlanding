@@ -4,8 +4,6 @@ interface Props {
 	title: string;
 	description: string;
 }
-import YoutuberLanding from '../components/YoutuberLanding';
-
 
 const { description, title } = Astro.props;
 ---
@@ -15,6 +13,13 @@ const { description, title } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="description" content={description} />
+
+    <!-- Meta tags para redes sociales -->
+    <meta property="og:title" content="Dot Dager - Landing" />
+    <meta property="og:description" content="Full-stack senior y contador serial de chistes de mierda." />
+    <meta property="og:type" content="website" />
+
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <meta name="generator" content={Astro.generator} />
